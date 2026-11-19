@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex"><meta name="referrer" content="no-referrer">
+<title>Anmeldung abgeschlossen</title><link rel="stylesheet" href="style.css"></head>
+<body><main>
+<h1 id="titel">Anmeldung</h1>
+<p id="hinweis" class="muted"></p>
+<div class="card" id="box" hidden>
+  <div class="code" id="code"></div>
+  <button id="kopieren" type="button">Code kopieren</button>
+</div>
+<p class="muted">Diese Seite schickt den Code nirgendwohin. Er wird nur hier angezeigt.</p>
+<script>
+(function () {
+  var p = new URLSearchParams(location.search);
+  var code = p.get("code"), fehler = p.get("error");
+  var t = document.getElementById("titel"), h = document.getElementById("hinweis");
+  if (code) {
+    t.textContent = "Fast geschafft";
+    h.textContent = "Kopiere den Code und schick ihn Claude. Er ist nur wenige Minuten gültig.";
+    document.getElementById("code").textContent = code;
+    document.getElementById("box").hidden = false;
+    document.getElementById("kopieren").onclick = function () {
+      var b = this;
+      navigator.clipboard.writeText(code).then(function () { b.textContent = "Kopiert ✓"; },
+        function () { b.textContent = "Bitte Code markieren und kopieren"; });
+    };
+  } else if (fehler) {
+    t.textContent = "Anmeldung abgebrochen";
+    h.textContent = "Fehler: " + fehler + (p.get("error_description") ? " – " + p.get("error_description") : "");
+  } else {
+    h.textContent = "Kein Code gefunden. Bitte die Anmeldung neu starten.";
+  }
+})();
+</script>
+</main></body></html>
